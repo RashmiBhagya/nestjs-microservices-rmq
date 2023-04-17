@@ -36,6 +36,25 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+  products:
+    build:
+      context: .
+      dockerfile: ./apps/products/Dockerfile
+      target: development
+    command: npm run start:dev products
+    env_file:
+      - ./apps/products/.env
+    depends_on:
+      - mongodb-primary
+      - mongodb-secondary
+      - mongodb-arbiter
+      - rabbitmq
+      - auth
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3007:3007'      
   auth:
     build:
       context: .
@@ -53,7 +72,7 @@ services:
       - rabbitmq
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - /usr/src/app/node_modules  
   rabbitmq:
     image: rabbitmq
     ports:
